@@ -27,3 +27,12 @@ input[type="search"] {
 .cardIMG {
   height: 200px;
 }
+
+.sorter{
+  padding-right: 10px;
+  padding-left: 10px;
+  z-index: 2;
+}
+.likeBTN{
+  margin: 10px;
+}

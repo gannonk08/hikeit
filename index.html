@@ -30,9 +30,9 @@
               </form>
             </li>
             <li>
-              <div class="input-field">
+              <div class="input-field sorter">
                 <select ng-init="sort='rating'" ng-model="sortBy">
-                  <option value="rating" disabled selected>Sort by:</option>
+                  <option value="" disabled selected>Sort by:</option>
                   <option  value="title">Title</option>
                   <option  value="rating">Rating</option>
                 </select>
@@ -103,46 +103,93 @@
     </div>
   </form>
   <div class="section no-pad-bot" id="index-banner">
-    <div class="container-fluid">
-      <div class="row center" ng-controller="formPoster" ng-repeat='post in posts | orderBy:sortBy | filter:searchText track by $index'>
-        <div class="col s12 m6 offset-m3">
+    <div class="container-fluid" ng-controller="changeRating" >
+      <div class="row center" ng-repeat='post in posts | orderBy:sortBy | filter:searchText track by $index'>
+        <div class="col s12 m8 offset-m2">
           <div class="card">
             <div class="card-image waves-effect waves-block waves-light">
               <img class="activator cardIMG" src={{post.imgURL}}>
             </div>
             <div class="card-content">
               <span class="card-title activator grey-text text-darken-4">{{post.title}}  |  {{post.rating}}</span>
+              <span class="likeBTN">
+                <button ng-click="changeRating('increase',post.id)" class="btn-floating btn-small waves-effect waves-light red likeBTN"><i class="material-icons" >thumb_up</i></button>
+                <button ng-click="changeRating('decrease', post.id)" class="btn-floating btn-small waves-effect waves-light red likeBTN"><i class="material-icons" >thumb_down</i></button>
+              </span>
 
             </div>
             <div class="card-reveal">
-              <span class="card-title grey-text text-darken-4">{{post.title}} - {{post.rating}}<i class="material-icons right">close</i></span>
+              <span class="card-title grey-text text-darken-4">{{post.title}}  |  {{post.rating}}<i class="material-icons right">close</i></span>
+              <hr>
+              <h5 class="card-title grey-text text-darken-4">Description:</h5>
               <p>{{post.description}}</p>
-              <button ng-click="changeRating(increase)" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons" >thumb_up</i></button>
-              <button ng-click="changeRating(decrease)" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons" >thumb_down</i></button>
+              <hr>
+              <h5 class="card-title grey-text text-darken-4">Comments:</h5>
+                <div ng-repeat="comment in comments">
+                  <div class="col s12 m1">
+                    <button ng-click="addComment = ! addComment" class="btn-floating btn-small waves-effect waves-light red likeBTN"><i class="material-icons" >add</i></button>
+                  </div>
+                  <div ng-if ="comment.postID === post.id">
+                    <div class="row">
+                      <div class="col s12 m7">
+                        <p>
+                          <strong>{{comment.comment}}</strong>
+                        </p>
+                      </div>
+                      <div class="col s12 m2">
+                        <p>
+                          {{comment.author}}
+                        </p>
+                      </div>
+                      <div class="col s12 m2">
+                        <p>
+                          {{comment.date | date}}
+                        </p>
+                      </div>
+                      <div class="row" ng-show="addComment">
+                        <form name="commentPoster" ng-controller="commentPoster">
+                          <div class="col s12 m6">
+                            <label for="comment" >Comment:</label>
+                            <input ng-class="{'invalid': commentPoster.comment.$invalid, 'valid' : commentPoster.comment.$valid}" type="text" name="comment" ng-model="comment" ng-minlength="3" ng-maxlength="140" required/>
+                            <div ng-messages="commentPoster.title.$error">
+                              <div ng-message="required">This field is required</div>
+                              <div ng-message="minlength">Comment must be at least 3 characters</div>
+                              <div ng-message="maxlength">Comment cannot be longer than 25 characters</div>
+                            </div>
+                           </div>
+                           <div class="col s12 m5">
+                             <label for="author" >Author:</label>
+                             <input ng-class="{'invalid': commentPoster.author.$invalid, 'valid' : commentPoster.author.$valid}" type="text" name="author" ng-model="author" ng-minlength="3" ng-maxlength="140" required/>
+                             <div ng-messages="commentPoster.title.$error">
+                               <div ng-message="required">This field is required</div>
+                               <div ng-message="minlength">Author must be at least 3 characters</div>
+                               <div ng-message="maxlength">Author cannot be longer than 25 characters</div>
+                             </div>
+                            </div>
+                            <div class="col s12 m1">
+                              <button ng-click=""class="submitButton btn waves-effect waves-light" type="submit" name="action">
+                                <i class="material-icons right">send</i>
+                              </button>
+                            </div>
+                        </form>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+
+
             </div>
           </div>
         </div>
+        <br><br>
       </div>
-      <br><br>
-
-    </div>
-  </div>
-
-
-  <div class="container">
-    <div class="section">
-
-    </div>
-    <br><br>
-
-    <div class="section">
-
     </div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
 
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
