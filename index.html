@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html ng-app="hikeIT">
+  <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="main.css">
+
+    <title>hikeit</title>
+  </head>
+  <body>
+
+    <nav>
+      <div class="nav-wrapper" class="light-blue lighten-1" role="navigation">
+        <div class="col s1 m1">
+          <a href="#" class="brand-logo"><img src="mountain.png" alt="mountain" class="brandIMG"> hikeit</a>
+        </div>
+        <div class="col s4 m4">
+          <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li>
+              <form>
+                <div class="input-field">
+                  <input id="search" input ng-model="searchText" type="text" placeholder="Search here">
+                  <label for="search"><i class="material-icons">search</i></label>
+                </div>
+              </form>
+            </li>
+            <li>
+              <div class="input-field">
+                <select ng-init="sort='rating'" ng-model="sortBy">
+                  <option value="rating" disabled selected>Sort by:</option>
+                  <option  value="title">Title</option>
+                  <option  value="rating">Rating</option>
+                </select>
+              </div>
+            </li>
+            <li><a class="waves-effect waves-light btn modal-trigger" href="#modal1">Add Post + </a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Add Post Modal -->
+  <form name="newPost" ng-controller="formPoster">
+    <div id="modal1" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h4>Add your story below</h4>
+        <div class="row">
+          <div class="col s8 m8 offset-s2 offset-m2">
+            <label for="title" >Title:</label>
+            <input ng-class="{'invalid': newPost.title.$invalid, 'valid' : newPost.title.$valid}" type="text" name="title" ng-model="title" ng-minlength="3" ng-maxlength="25" required/>
+            <div ng-messages="newPost.title.$error">
+              <div ng-message="required">This field is required</div>
+              <div ng-message="minlength">Title must be at least 3 characters</div>
+              <div ng-message="maxlength">Title cannot be longer than 25 characters</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s8 m8 offset-s2 offset-m2">
+            <label for="author" >Author:</label>
+            <input ng-class="{'invalid': newPost.author.$invalid, 'valid' : newPost.author.$valid}" type="text" name="author" ng-model="author" ng-minlength="3" ng-maxlength="12" required/>
+            <div ng-messages="newPost.author.$error">
+              <div ng-message="required">This field is required</div>
+              <div ng-message="minlength">Author must be at least 3 characters</div>
+              <div ng-message="maxlength">Author cannot be longer than 12 characters</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s8 m8 offset-s2 offset-m2">
+            <label for="imgURL" >Image URL:</label>
+            <input ng-class="{'invalid': newPost.imgURL.$invalid, 'valid' : newPost.imgURL.$valid}" type="url" name="imgURL" ng-model="imgURL" required/>
+            <div ng-messages="newPost.imgURL.$error">
+              <div ng-message="required">This field is required</div>
+              <div ng-message="url">This must be a url</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s8 m8 offset-s2 offset-m2">
+            <label for="description" >Description:</label>
+            <input ng-class="{'invalid': newPost.description.$invalid, 'valid' : newPost.description.$valid}" type="text" name="description" ng-model="description" ng-minlength="3" ng-maxlength="100" required/>
+            <div ng-messages="newPost.description.$error">
+              <div ng-message="required">This field is required</div>
+              <div ng-message="minlength">Description must be at least 3 characters</div>
+              <div ng-message="maxlength">Description cannot be longer than 100 characters</div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12 m4 offset-m8">
+            <button ng-click="addPost(title, author, imgURL, description)"class="submitButton btn waves-effect waves-light" type="submit" name="action">Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container-fluid">
+      <div class="row center" ng-controller="formPoster" ng-repeat='post in posts | orderBy:sortBy | filter:searchText track by $index'>
+        <div class="col s12 m6 offset-m3">
+          <div class="card">
+            <div class="card-image waves-effect waves-block waves-light">
+              <img class="activator cardIMG" src={{post.imgURL}}>
+            </div>
+            <div class="card-content">
+              <span class="card-title activator grey-text text-darken-4">{{post.title}}  |  {{post.rating}}</span>
+
+            </div>
+            <div class="card-reveal">
+              <span class="card-title grey-text text-darken-4">{{post.title}} - {{post.rating}}<i class="material-icons right">close</i></span>
+              <p>{{post.description}}</p>
+              <button ng-click="changeRating(increase)" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons" >thumb_up</i></button>
+              <button ng-click="changeRating(decrease)" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons" >thumb_down</i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br><br>
+
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+
+    </div>
+    <br><br>
+
+    <div class="section">
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/css/materialize.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.5.8/angular-messages.js"></script>
+
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+  <script src="app.js"></script>
+  <script src="modal.js"></script>
+  </body>
+</html>
